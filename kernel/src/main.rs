@@ -7,14 +7,20 @@ use core::intrinsics::volatile_load;
 use core::intrinsics::volatile_store;
 use core::panic::PanicInfo;
 
-// raspi2 and raspi3 have peripheral base address 0x3F000000,
-// but raspi1 has peripheral base address 0x20000000. Ensure
-// you are using the correct peripheral address for your
-// hardware.
 const UART_DR: u32 = 0x3F201000;
 const UART_FR: u32 = 0x3F201018;
 
-mod boot;
+mod boot {
+    use core::arch::global_asm;
+    global_asm!(".section .text._start");
+}
+#[no_mangle]
+pub extern "C" fn _start() -> ! {
+    write("Hello Rust Kernel world!");
+    loop {
+        writec(getc())
+    }
+}
 
 fn mmio_write(reg: u32, val: u32) {
     unsafe { volatile_store(reg as *mut u32, val) }
@@ -45,14 +51,6 @@ fn getc() -> u8 {
 fn write(msg: &str) {
     for c in msg.chars() {
         writec(c as u8)
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn kernel_init() -> ! {
-    write("Hello Rust Kernel world!");
-    loop {
-        writec(getc())
     }
 }
 
