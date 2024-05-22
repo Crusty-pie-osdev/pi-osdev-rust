@@ -1,7 +1,7 @@
+#![allow(internal_features)]
 #![no_main]
 #![no_std]
 #![feature(core_intrinsics, lang_items, asm_const)]
-
 use core::intrinsics::abort;
 use core::intrinsics::volatile_load;
 use core::intrinsics::volatile_store;
