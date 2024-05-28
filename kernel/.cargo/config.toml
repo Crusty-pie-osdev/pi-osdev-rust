@@ -1,0 +1,3 @@
+[build]
+target = "aarch64-unknown-none-softfloat"
+rustflags = ["-C", "target-cpu=cortex-a76", "-C", "link-arg=--script=linker.ld"]
